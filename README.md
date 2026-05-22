@@ -106,3 +106,38 @@ If `vector_search` unexpectedly returns no results:
    ```
 
    It exits `0` if at least one candidate is returned, `1` otherwise.
+
+## Phase A1 — MongoDB MCP Setup
+
+Honeycomb talks to MongoDB through the official [MongoDB MCP server](https://github.com/mongodb-js/mongodb-mcp-server) (`mongodb-mcp-server` on npm), spawned locally as a subprocess over stdio. This is the hackathon's required partner integration.
+
+### Prerequisite: Node.js
+
+The MCP server is a Node.js package run via `npx`. Install **Node.js 18+** and verify:
+
+```bash
+node --version
+```
+
+### Run the smoke test
+
+```bash
+python scripts/test_mongo_mcp.py
+```
+
+This spawns the MongoDB MCP server (via `cmd /c npx -y mongodb-mcp-server` on Windows, `npx -y mongodb-mcp-server` on POSIX), performs the MCP `initialize` handshake using `MONGODB_URI` from your `.env`, lists the server's tools, then calls a read-only tool to confirm Atlas connectivity. The subprocess is closed automatically on exit. The first run may take a moment while `npx` downloads the package. The whole test times out after 60 seconds.
+
+**Expected output:**
+
+1. A list of MongoDB MCP tools, including `find`, `aggregate`, `count`, `list-collections`, `list-databases`, `insert-one`, `update-one`, `delete-one`, and others.
+2. A successful `list-collections` call against the `honeycomb` database showing `["concepts"]`.
+
+### Configuration
+
+`agent/mcp_config.json` declares the server. Its `MDB_MCP_CONNECTION_STRING` value is a placeholder — at runtime it is replaced with `MONGODB_URI` from `.env`.
+
+### Troubleshooting
+
+- **`npx not found`:** Node.js is not on `PATH`. Reinstall Node.js (the installer adds it to `PATH`) and open a fresh PowerShell session.
+- **Hang / timeout (60s):** the `MONGODB_URI` is likely wrong, or your current IP is not on the Atlas **Network Access** allowlist. Verify both, then retry.
+- **`ENOENT` or shell errors on Windows:** `npx` is `npx.cmd` and cannot be exec'd directly. The smoke test routes through `cmd /c` on Windows for this reason; if you adapt the spawn code, preserve that.

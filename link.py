@@ -1,4 +1,5 @@
 import difflib
+import re
 import time
 from datetime import datetime, timezone
 
@@ -12,7 +13,38 @@ import embed
 _console = Console()
 
 
-def link_or_create(concept: dict, source_meta: dict, threshold: float = 0.93) -> tuple[str, ObjectId]:
+def _normalize_concept_name(name: str) -> str:
+    """Lowercase, strip parens content, remove common qualifier suffixes,
+    sort words to handle reordering. Falls back to the parens-stripped name
+    when aggressive stripping would erase everything meaningful."""
+    raw_lower = name.lower().strip()
+    # Always strip parens content first: "Neuron (Artificial)" -> "neuron"
+    no_parens = re.sub(r"\s*\([^)]*\)\s*", " ", raw_lower)
+    no_parens = " ".join(no_parens.split())
+    # Try aggressive normalization (strip common boilerplate suffixes)
+    n = re.sub(r"\b(neural network[s]?|of a neuron|in a neural network|of neural networks?)\b", "", no_parens)
+    n = " ".join(n.split())
+    # Fallback if aggressive stripping erased everything meaningful
+    # (e.g. the name itself IS the boilerplate, like "Neural Network")
+    if len(n) < 3:
+        n = no_parens
+    # Sort words alphabetically so "neural network learning" == "learning neural network"
+    return " ".join(sorted(n.split())) if n else ""
+
+
+def _names_likely_match(a: str, b: str) -> bool:
+    na = _normalize_concept_name(a)
+    nb = _normalize_concept_name(b)
+    if not na or not nb:
+        return False
+    if na == nb:
+        return True
+    if na in nb or nb in na:
+        return True
+    return difflib.SequenceMatcher(None, na, nb).ratio() >= 0.6
+
+
+def link_or_create(concept: dict, source_meta: dict, threshold: float = 0.95) -> tuple[str, ObjectId]:
     embedding = embed.embed_concept(concept)
     candidates = db.vector_search(embedding, limit=3)
 
@@ -23,16 +55,16 @@ def link_or_create(concept: dict, source_meta: dict, threshold: float = 0.93) ->
     )
 
     top = candidates[0] if candidates else None
-    name_sim = None
     decision = "created"
     if top is not None:
-        new_name_lower = concept["name"].lower().strip()
-        name_sim = difflib.SequenceMatcher(None, top.get("name_lower", ""), new_name_lower).ratio()
+        raw_a, raw_b = concept["name"], top.get("name", "")
+        norm_a, norm_b = _normalize_concept_name(raw_a), _normalize_concept_name(raw_b)
+        name_match = _names_likely_match(raw_a, raw_b)
+        print(f"[link] '{raw_a}' -> '{raw_b}' | norm: '{norm_a}' vs '{norm_b}' | match={name_match}")
         if top["_score"] >= threshold:
-            decision = "merged" if name_sim >= 0.6 else "name-sim-blocked"
+            decision = "merged" if name_match else "name-sim-blocked"
 
-    name_sim_str = f"{name_sim:.2f}" if name_sim is not None else "n/a"
-    print(f"[link]   decision: {decision} (threshold={threshold}, name_sim={name_sim_str})")
+    print(f"[link]   decision: {decision} (threshold={threshold})")
 
     if decision == "merged":
         db.get_collection().update_one(

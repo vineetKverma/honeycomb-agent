@@ -80,3 +80,29 @@ python main.py query "<concept text>"
 | 3 | **Storage** | All concepts persisted to MongoDB with embeddings (no write errors) |
 | 4 | **Vector linking** | Each concept returns ≥ 2 related concepts via similarity search (cosine score > 0.75) |
 | 5 | **End-to-end latency** | Full pipeline (fetch → extract → embed → store → link) completes in < 60 s per video |
+
+## Troubleshooting
+
+### Never drop the collection from the Atlas UI
+
+**Do NOT use the Atlas UI "Drop Collection" action.** Dropping the collection also destroys the associated vector search index, and you'll have to recreate the index by hand before vector search works again.
+
+To clear data safely (documents removed, collection and index preserved):
+
+```bash
+python scripts/wipe_concepts.py
+```
+
+### Vector search returns zero candidates
+
+If `vector_search` unexpectedly returns no results:
+
+1. Open the Atlas **Search Indexes** tab for the `honeycomb.concepts` collection.
+2. Confirm the `concept_vector_index` index exists and is in **Active** status (a freshly created index takes a short while to build).
+3. Run the sanity check:
+
+   ```bash
+   python scripts/check_vector_search.py
+   ```
+
+   It exits `0` if at least one candidate is returned, `1` otherwise.

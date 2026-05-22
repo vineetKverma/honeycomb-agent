@@ -1,0 +1,1388 @@
+{
+  "generated_at": "2026-05-22T11:10:17.457283+00:00",
+  "per_source": [
+    {
+      "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+      "video_id": "aircAruvnKk",
+      "transcript_chars": 18430,
+      "total_concepts": 13,
+      "created_count": 13,
+      "merged_count": 0,
+      "concept_names": [
+        "Neural Network",
+        "Neuron (in Neural Networks)",
+        "Activation (Neural Network)",
+        "Input Layer",
+        "Hidden Layer",
+        "Output Layer",
+        "Weight (Neural Network)",
+        "Bias (Neural Network)",
+        "Weighted Sum (Neural Network)",
+        "Sigmoid Function",
+        "Rectified Linear Unit (ReLU)",
+        "Learning (in Neural Networks)",
+        "Matrix-Vector Multiplication (Neural Networks Context)"
+      ],
+      "elapsed_seconds": 47.88
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+      "video_id": "WUvTyaaNkzM",
+      "transcript_chars": 15797,
+      "total_concepts": 10,
+      "created_count": 10,
+      "merged_count": 0,
+      "concept_names": [
+        "Area of a Circle Formula",
+        "Concentric Rings Method",
+        "Approximating Ring Area",
+        "Circumference Formula",
+        "Differential",
+        "Approximation Refinement with Differentials",
+        "Area Under a Graph",
+        "Integral",
+        "Derivative",
+        "Fundamental Theorem of Calculus"
+      ],
+      "elapsed_seconds": 24.43
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+      "video_id": "lTTvKwCylFY",
+      "transcript_chars": 14737,
+      "total_concepts": 12,
+      "created_count": 12,
+      "merged_count": 0,
+      "concept_names": [
+        "Ancien R\u00e9gime",
+        "King Louis XVI",
+        "Estates General",
+        "Third Estate",
+        "Tennis Court Oath",
+        "Storming of the Bastille",
+        "Declaration of the Rights of Man and Citizen",
+        "Constitutional Monarchy",
+        "The Terror",
+        "Guillotine",
+        "Committee of Public Safety",
+        "Napoleon Bonaparte"
+      ],
+      "elapsed_seconds": 31.63
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+      "video_id": "YaDvRdLMkHs",
+      "transcript_chars": 10435,
+      "total_concepts": 10,
+      "created_count": 10,
+      "merged_count": 0,
+      "concept_names": [
+        "Essence",
+        "Essentialism",
+        "Nihilism",
+        "Existentialism",
+        "Existence Precedes Essence",
+        "Teleology (Existentialist context)",
+        "The Absurd (Existentialism)",
+        "Existential Freedom",
+        "Authenticity (Existentialism)",
+        "Bad Faith (Existentialism)"
+      ],
+      "elapsed_seconds": 24.16
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+      "video_id": "HtSuA80QTyo",
+      "transcript_chars": 36948,
+      "total_concepts": 22,
+      "created_count": 18,
+      "merged_count": 4,
+      "concept_names": [
+        "Algorithm Efficiency",
+        "Asymptotic Complexity",
+        "Theta Notation (\u0398)",
+        "Peak Finding Problem",
+        "Divide and Conquer Strategy",
+        "Recurrence Relation",
+        "Data Structure",
+        "Binary Search Trees",
+        "Hash Tables",
+        "Dynamic Programming",
+        "Graphs (Data Structure)",
+        "Worst-Case Complexity",
+        "Logarithmic Time Complexity (\u0398(log n))",
+        "Linear Time Complexity (\u0398(n))",
+        "Peak (1D Array)",
+        "Peak (2D Matrix)",
+        "Greedy Ascent Algorithm",
+        "Worst Case Analysis (Algorithms)",
+        "Divide and Conquer Paradigm",
+        "Algorithm Correctness",
+        "Recurrence Relation (Complexity Analysis)",
+        "Base Case (Recursion)"
+      ],
+      "elapsed_seconds": 52.96
+    }
+  ],
+  "concepts": [
+    {
+      "_id": "6a1039056786f498b571a3f3",
+      "name": "Neural Network",
+      "name_lower": "neural network",
+      "definition": "A computational model inspired by the brain's structure, consisting of layers of interconnected neurons that process information to perform tasks like pattern recognition.",
+      "prerequisites": [
+        "Neuron",
+        "Layer",
+        "Weight",
+        "Bias",
+        "Activation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:49.583000",
+      "updated_at": "2026-05-22T11:07:49.583000"
+    },
+    {
+      "_id": "6a1039076786f498b571a3f4",
+      "name": "Neuron (in Neural Networks)",
+      "name_lower": "neuron (in neural networks)",
+      "definition": "A fundamental unit within a neural network that holds a numerical value, typically between 0 and 1, representing its 'activation' or how 'fired up' it is.",
+      "prerequisites": [
+        "Number",
+        "Activation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:51.075000",
+      "updated_at": "2026-05-22T11:07:51.075000"
+    },
+    {
+      "_id": "6a1039086786f498b571a3f5",
+      "name": "Activation (Neural Network)",
+      "name_lower": "activation (neural network)",
+      "definition": "The numerical value held by a neuron, usually between 0 and 1, which represents its output or how strongly it responds to the input it receives.",
+      "prerequisites": [
+        "Neuron",
+        "Numerical Value"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:52.055000",
+      "updated_at": "2026-05-22T11:07:52.055000"
+    },
+    {
+      "_id": "6a1039096786f498b571a3f6",
+      "name": "Input Layer",
+      "name_lower": "input layer",
+      "definition": "The first layer of a neural network, where each neuron's activation directly corresponds to a specific input feature, such as the grayscale value of a pixel in an image.",
+      "prerequisites": [
+        "Neuron",
+        "Activation",
+        "Input Data"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:53.068000",
+      "updated_at": "2026-05-22T11:07:53.068000"
+    },
+    {
+      "_id": "6a10390a6786f498b571a3f7",
+      "name": "Hidden Layer",
+      "name_lower": "hidden layer",
+      "definition": "Intermediate layers in a neural network located between the input and output layers, responsible for processing abstract features and patterns from the input data.",
+      "prerequisites": [
+        "Layer",
+        "Neuron",
+        "Input Layer",
+        "Output Layer"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:54.100000",
+      "updated_at": "2026-05-22T11:07:54.100000"
+    },
+    {
+      "_id": "6a10390b6786f498b571a3f8",
+      "name": "Output Layer",
+      "name_lower": "output layer",
+      "definition": "The final layer of a neural network, where each neuron's activation represents the network's final decision or prediction, such as the probability of an image belonging to a specific digit class.",
+      "prerequisites": [
+        "Neuron",
+        "Activation",
+        "Neural Network Prediction"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:55.145000",
+      "updated_at": "2026-05-22T11:07:55.145000"
+    },
+    {
+      "_id": "6a10390c6786f498b571a3f9",
+      "name": "Weight (Neural Network)",
+      "name_lower": "weight (neural network)",
+      "definition": "A numerical parameter associated with each connection between neurons in different layers, determining the strength and importance of the signal passed from one neuron to the next.",
+      "prerequisites": [
+        "Neuron",
+        "Connection",
+        "Numerical Parameter"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:56.185000",
+      "updated_at": "2026-05-22T11:07:56.185000"
+    },
+    {
+      "_id": "6a10390d6786f498b571a3fa",
+      "name": "Bias (Neural Network)",
+      "name_lower": "bias (neural network)",
+      "definition": "An additional numerical parameter added to the weighted sum of inputs for a neuron, allowing the neuron's activation to be shifted or 'biased' independently of its input signals.",
+      "prerequisites": [
+        "Neuron",
+        "Weighted Sum",
+        "Numerical Parameter"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:57.255000",
+      "updated_at": "2026-05-22T11:07:57.255000"
+    },
+    {
+      "_id": "6a10390e6786f498b571a3fb",
+      "name": "Weighted Sum (Neural Network)",
+      "name_lower": "weighted sum (neural network)",
+      "definition": "The sum of the activations from the previous layer, where each activation is multiplied by its corresponding weight, forming the primary input to a neuron.",
+      "prerequisites": [
+        "Activation",
+        "Weight",
+        "Summation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:58.283000",
+      "updated_at": "2026-05-22T11:07:58.283000"
+    },
+    {
+      "_id": "6a10390f6786f498b571a3fc",
+      "name": "Sigmoid Function",
+      "name_lower": "sigmoid function",
+      "definition": "A common activation function used in early neural networks that squishes any real-valued input into an output range between 0 and 1, resembling an S-shaped curve.",
+      "prerequisites": [
+        "Activation Function",
+        "Real Numbers",
+        "Output Range"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:07:59.265000",
+      "updated_at": "2026-05-22T11:07:59.265000"
+    },
+    {
+      "_id": "6a1039106786f498b571a3fd",
+      "name": "Rectified Linear Unit (ReLU)",
+      "name_lower": "rectified linear unit (relu)",
+      "definition": "A widely used activation function in modern neural networks that outputs the input directly if it is positive, and zero otherwise, helping to address training difficulties found with sigmoid functions.",
+      "prerequisites": [
+        "Activation Function",
+        "Linear Function",
+        "Max Function"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:00.281000",
+      "updated_at": "2026-05-22T11:08:00.281000"
+    },
+    {
+      "_id": "6a1039116786f498b571a3fe",
+      "name": "Learning (in Neural Networks)",
+      "name_lower": "learning (in neural networks)",
+      "definition": "The process by which a neural network adjusts its internal parameters (weights and biases) based on training data, aiming to find optimal settings that enable it to accurately perform a given task.",
+      "prerequisites": [
+        "Neural Network",
+        "Weight",
+        "Bias",
+        "Training Data",
+        "Optimization"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:01.488000",
+      "updated_at": "2026-05-22T11:08:01.488000"
+    },
+    {
+      "_id": "6a1039126786f498b571a3ff",
+      "name": "Matrix-Vector Multiplication (Neural Networks Context)",
+      "name_lower": "matrix-vector multiplication (neural networks context)",
+      "definition": "A compact mathematical operation used to represent the simultaneous calculation of weighted sums for an entire layer of neurons, where activations are organized into vectors and weights into matrices.",
+      "prerequisites": [
+        "Matrix",
+        "Vector",
+        "Weighted Sum",
+        "Linear Algebra"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+          "video_id": "aircAruvnKk",
+          "ingested_at": "2026-05-22T11:07:29.449943+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:02.627000",
+      "updated_at": "2026-05-22T11:08:02.627000"
+    },
+    {
+      "_id": "6a1039216786f498b571a400",
+      "name": "Area of a Circle Formula",
+      "name_lower": "area of a circle formula",
+      "definition": "The formula for the area of a circle is A = pi * r^2, where A is the area and r is the radius, representing the total space enclosed within the circle's boundary.",
+      "prerequisites": [
+        "Circle",
+        "Radius",
+        "Pi"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:17.870000",
+      "updated_at": "2026-05-22T11:08:17.870000"
+    },
+    {
+      "_id": "6a1039226786f498b571a401",
+      "name": "Concentric Rings Method",
+      "name_lower": "concentric rings method",
+      "definition": "A technique for calculating the area of a circle by conceptually dividing it into an infinite number of progressively larger, thin rings, each centered at the circle's origin.",
+      "prerequisites": [
+        "Circle",
+        "Area",
+        "Symmetry"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:18.935000",
+      "updated_at": "2026-05-22T11:08:18.935000"
+    },
+    {
+      "_id": "6a1039236786f498b571a402",
+      "name": "Approximating Ring Area",
+      "name_lower": "approximating ring area",
+      "definition": "The area of a thin concentric ring within a circle can be approximated as a rectangle by 'unrolling' it, where the rectangle's length is the ring's circumference and its width is its thickness.",
+      "prerequisites": [
+        "Concentric Rings Method",
+        "Circumference",
+        "Rectangle Area"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:19.978000",
+      "updated_at": "2026-05-22T11:08:19.978000"
+    },
+    {
+      "_id": "6a1039256786f498b571a403",
+      "name": "Circumference Formula",
+      "name_lower": "circumference formula",
+      "definition": "The circumference of a circle is the distance around its edge, calculated by the formula C = 2 * pi * r, where C is the circumference and r is the radius.",
+      "prerequisites": [
+        "Circle",
+        "Radius",
+        "Pi"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:21.006000",
+      "updated_at": "2026-05-22T11:08:21.006000"
+    },
+    {
+      "_id": "6a1039256786f498b571a404",
+      "name": "Differential",
+      "name_lower": "differential",
+      "definition": "A differential, such as dr, dx, or dt, represents an infinitesimally small change or 'tiny nudge' in a variable, used in calculus to quantify small increments in quantities like radius, input, or time.",
+      "prerequisites": [
+        "Variable",
+        "Infinitesimals"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:21.987000",
+      "updated_at": "2026-05-22T11:08:21.987000"
+    },
+    {
+      "_id": "6a1039266786f498b571a405",
+      "name": "Approximation Refinement with Differentials",
+      "name_lower": "approximation refinement with differentials",
+      "definition": "In calculus, approximations of geometric shapes or quantities become increasingly accurate as the size of the differentials (e.g., dr or dx) used for slicing or nudging approaches zero, allowing for precise calculations.",
+      "prerequisites": [
+        "Approximation",
+        "Differential",
+        "Limit"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:22.996000",
+      "updated_at": "2026-05-22T11:08:22.996000"
+    },
+    {
+      "_id": "6a1039286786f498b571a406",
+      "name": "Area Under a Graph",
+      "name_lower": "area under a graph",
+      "definition": "The area under a graph refers to the total space enclosed between a function's curve and the x-axis over a specified interval, often found by summing the areas of infinitely many infinitesimally thin rectangles.",
+      "prerequisites": [
+        "Function",
+        "Graph",
+        "x-axis",
+        "Interval",
+        "Rectangle Area"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:24.025000",
+      "updated_at": "2026-05-22T11:08:24.025000"
+    },
+    {
+      "_id": "6a1039296786f498b571a407",
+      "name": "Integral",
+      "name_lower": "integral",
+      "definition": "An integral is a function that represents the accumulated quantity of another function over a given interval, often interpreted as the area under the graph of the original function.",
+      "prerequisites": [
+        "Function",
+        "Area Under a Graph",
+        "Interval"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:25.085000",
+      "updated_at": "2026-05-22T11:08:25.085000"
+    },
+    {
+      "_id": "6a10392a6786f498b571a408",
+      "name": "Derivative",
+      "name_lower": "derivative",
+      "definition": "A derivative quantifies how a function's output changes in response to an infinitesimally small change in its input, serving as a measure of the function's instantaneous rate of change or the slope of its tangent line.",
+      "prerequisites": [
+        "Function",
+        "Input",
+        "Output",
+        "Rate of Change",
+        "Slope",
+        "Differential"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:26.129000",
+      "updated_at": "2026-05-22T11:08:26.129000"
+    },
+    {
+      "_id": "6a10392b6786f498b571a409",
+      "name": "Fundamental Theorem of Calculus",
+      "name_lower": "fundamental theorem of calculus",
+      "definition": "The Fundamental Theorem of Calculus establishes a crucial connection between differentiation and integration, stating that these two operations are essentially inverse processes of each other.",
+      "prerequisites": [
+        "Integral",
+        "Derivative",
+        "Inverse Operations"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM",
+          "video_id": "WUvTyaaNkzM",
+          "ingested_at": "2026-05-22T11:08:16.871016+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:27.157000",
+      "updated_at": "2026-05-22T11:08:27.157000"
+    },
+    {
+      "_id": "6a10393f6786f498b571a40a",
+      "name": "Ancien R\u00e9gime",
+      "name_lower": "ancien r\u00e9gime",
+      "definition": "The political and social system in France before the French Revolution, characterized by a monarchy, a feudal-like structure, and societal divisions into estates where the nobility and clergy enjoyed privileges and tax exemptions.",
+      "prerequisites": [
+        "French history",
+        "Monarchy",
+        "Social hierarchy"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:47.387000",
+      "updated_at": "2026-05-22T11:08:47.387000"
+    },
+    {
+      "_id": "6a1039406786f498b571a40b",
+      "name": "King Louis XVI",
+      "name_lower": "king louis xvi",
+      "definition": "The last King of France before the French Revolution, whose financial mismanagement, lavish spending, and resistance to reform exacerbated the economic crisis and contributed to the revolution's outbreak.",
+      "prerequisites": [
+        "French monarchy",
+        "Ancien R\u00e9gime",
+        "Absolute power"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:48.407000",
+      "updated_at": "2026-05-22T11:08:48.407000"
+    },
+    {
+      "_id": "6a1039416786f498b571a40c",
+      "name": "Estates General",
+      "name_lower": "estates general",
+      "definition": "A legislative assembly of the three classes (Estates) of French subjects, which had not met since 1614. King Louis XVI convened it in 1789 to address the severe financial crisis, but it quickly became a forum for revolutionary demands.",
+      "prerequisites": [
+        "French government",
+        "Ancien R\u00e9gime",
+        "King Louis XVI"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:49.421000",
+      "updated_at": "2026-05-22T11:08:49.421000"
+    },
+    {
+      "_id": "6a1039426786f498b571a40d",
+      "name": "Third Estate",
+      "name_lower": "third estate",
+      "definition": "In the Ancien R\u00e9gime, this estate comprised the vast majority of the French population, including commoners, merchants, and peasants. They were burdened by taxation without enjoying the privileges of the First (clergy) or Second (nobility) Estates.",
+      "prerequisites": [
+        "Estates General",
+        "Ancien R\u00e9gime",
+        "French society"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:50.433000",
+      "updated_at": "2026-05-22T11:08:50.433000"
+    },
+    {
+      "_id": "6a1039436786f498b571a40e",
+      "name": "Tennis Court Oath",
+      "name_lower": "tennis court oath",
+      "definition": "A pivotal event on June 20, 1789, where members of the Third Estate, having declared themselves the National Assembly, swore not to disperse until a new French constitution was established. This demonstrated their resolve against royal authority.",
+      "prerequisites": [
+        "Third Estate",
+        "National Assembly",
+        "French Constitution"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:51.486000",
+      "updated_at": "2026-05-22T11:08:51.486000"
+    },
+    {
+      "_id": "6a1039446786f498b571a40f",
+      "name": "Storming of the Bastille",
+      "name_lower": "storming of the bastille",
+      "definition": "A symbolic act on July 14, 1789, when Parisian revolutionaries attacked the Bastille prison, a fortress used to hold political prisoners, primarily to seize weapons. This event marked a major escalation and is widely considered the beginning of the French Revolution.",
+      "prerequisites": [
+        "French Revolution",
+        "Public unrest",
+        "Royal troops"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:52.539000",
+      "updated_at": "2026-05-22T11:08:52.539000"
+    },
+    {
+      "_id": "6a1039456786f498b571a410",
+      "name": "Declaration of the Rights of Man and Citizen",
+      "name_lower": "declaration of the rights of man and citizen",
+      "definition": "A fundamental document adopted by the National Assembly on August 26, 1789, which proclaimed a set of universal individual and collective rights. It laid the foundation for the new French constitution and inspired movements for democracy worldwide.",
+      "prerequisites": [
+        "National Assembly",
+        "Enlightenment philosophy",
+        "Human rights"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:53.580000",
+      "updated_at": "2026-05-22T11:08:53.580000"
+    },
+    {
+      "_id": "6a1039466786f498b571a411",
+      "name": "Constitutional Monarchy",
+      "name_lower": "constitutional monarchy",
+      "definition": "A system of government where a monarch shares power with a constitutionally organized government, unlike an absolute monarchy. This was the initial goal of many revolutionaries in the early phase of the French Revolution.",
+      "prerequisites": [
+        "Monarchy",
+        "Constitution",
+        "Limited government"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:54.615000",
+      "updated_at": "2026-05-22T11:08:54.615000"
+    },
+    {
+      "_id": "6a1039476786f498b571a412",
+      "name": "The Terror",
+      "name_lower": "the terror",
+      "definition": "A period from 1793 to 1794 during the French Revolution characterized by extreme violence and political repression, where the Committee of Public Safety executed thousands of perceived enemies of the revolution, including King Louis XVI and Marie Antoinette.",
+      "prerequisites": [
+        "French Revolution",
+        "Maximilien Robespierre",
+        "Guillotine"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:55.645000",
+      "updated_at": "2026-05-22T11:08:55.645000"
+    },
+    {
+      "_id": "6a1039486786f498b571a413",
+      "name": "Guillotine",
+      "name_lower": "guillotine",
+      "definition": "A mechanical device designed for efficient and swift execution by decapitation. It was widely adopted during the French Revolution as a symbol of egalitarian justice, intended to provide a humane death without social distinction.",
+      "prerequisites": [
+        "Execution",
+        "The Terror",
+        "French Revolution"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:56.657000",
+      "updated_at": "2026-05-22T11:08:56.657000"
+    },
+    {
+      "_id": "6a1039496786f498b571a414",
+      "name": "Committee of Public Safety",
+      "name_lower": "committee of public safety",
+      "definition": "A powerful executive body established by the National Convention in 1793 during the French Revolution. It was tasked with defending the Republic from internal and external threats, effectively becoming the de facto government during The Terror.",
+      "prerequisites": [
+        "The Terror",
+        "National Convention",
+        "Maximilien Robespierre"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:57.755000",
+      "updated_at": "2026-05-22T11:08:57.755000"
+    },
+    {
+      "_id": "6a10394a6786f498b571a415",
+      "name": "Napoleon Bonaparte",
+      "name_lower": "napoleon bonaparte",
+      "definition": "A prominent French military and political leader who rose through the ranks during the French Revolution, eventually staging a coup in 1799 and establishing himself as First Consul, effectively ending the revolutionary period and beginning his imperial rule.",
+      "prerequisites": [
+        "French Revolution",
+        "Military leadership",
+        "Coup d'\u00e9tat"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=lTTvKwCylFY",
+          "video_id": "lTTvKwCylFY",
+          "ingested_at": "2026-05-22T11:08:46.427018+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:08:58.795000",
+      "updated_at": "2026-05-22T11:08:58.795000"
+    },
+    {
+      "_id": "6a1039596786f498b571a416",
+      "name": "Essence",
+      "name_lower": "essence",
+      "definition": "A concept, central to ancient Greek philosophy, referring to a specific set of core properties that are necessary for a thing to be what it is. If these properties are missing, the thing would fundamentally be different.",
+      "prerequisites": [
+        "Ancient Greek philosophy",
+        "Properties of objects"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:13.994000",
+      "updated_at": "2026-05-22T11:09:13.994000"
+    },
+    {
+      "_id": "6a10395a6786f498b571a417",
+      "name": "Essentialism",
+      "name_lower": "essentialism",
+      "definition": "The belief that everything, including humans, possesses a predetermined essence that exists before birth, giving it an inherent purpose. This view suggests that part of being a good human means adhering to this innate essence.",
+      "prerequisites": [
+        "Essence",
+        "Purpose"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:14.987000",
+      "updated_at": "2026-05-22T11:09:14.987000"
+    },
+    {
+      "_id": "6a10395b6786f498b571a418",
+      "name": "Nihilism",
+      "name_lower": "nihilism",
+      "definition": "A philosophical belief, embraced by thinkers like Friedrich Nietzsche, that posits the ultimate meaninglessness of life and existence. It suggests that values are baseless and knowledge is impossible.",
+      "prerequisites": [
+        "Philosophy of meaning",
+        "Friedrich Nietzsche"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:15.982000",
+      "updated_at": "2026-05-22T11:09:15.982000"
+    },
+    {
+      "_id": "6a10395c6786f498b571a419",
+      "name": "Existentialism",
+      "name_lower": "existentialism",
+      "definition": "A philosophical movement emphasizing that 'existence precedes essence,' meaning humans are born without a predetermined purpose or nature. Individuals are responsible for creating their own meaning and essence through their choices and actions.",
+      "prerequisites": [
+        "Essence",
+        "Purpose",
+        "Human existence",
+        "Jean-Paul Sartre"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:16.983000",
+      "updated_at": "2026-05-22T11:09:16.983000"
+    },
+    {
+      "_id": "6a10395d6786f498b571a41a",
+      "name": "Existence Precedes Essence",
+      "name_lower": "existence precedes essence",
+      "definition": "The core mantra of existentialism, asserting that an individual's existence comes before their essence. It means people are born without a fixed nature or purpose and must define themselves through their choices and lived experiences.",
+      "prerequisites": [
+        "Existentialism",
+        "Essence",
+        "Human existence"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:17.970000",
+      "updated_at": "2026-05-22T11:09:17.970000"
+    },
+    {
+      "_id": "6a10395e6786f498b571a41b",
+      "name": "Teleology (Existentialist context)",
+      "name_lower": "teleology (existentialist context)",
+      "definition": "In existentialist thought, teleology is the belief that the universe or humans were created with a specific purpose or end goal, often by a divine being. Theistic existentialists deny this, suggesting God does not instill inherent meaning.",
+      "prerequisites": [
+        "Existentialism",
+        "Purpose",
+        "Divine creation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:18.945000",
+      "updated_at": "2026-05-22T11:09:18.945000"
+    },
+    {
+      "_id": "6a10395f6786f498b571a41c",
+      "name": "The Absurd (Existentialism)",
+      "name_lower": "the absurd (existentialism)",
+      "definition": "An existentialist technical term describing the human condition of searching for inherent meaning, order, and answers in a universe that inherently provides none. It is the fundamental conflict between humanity's need for meaning and the universe's indifference.",
+      "prerequisites": [
+        "Existentialism",
+        "Meaning of life",
+        "Meaninglessness"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:19.933000",
+      "updated_at": "2026-05-22T11:09:19.933000"
+    },
+    {
+      "_id": "6a1039606786f498b571a41d",
+      "name": "Existential Freedom",
+      "name_lower": "existential freedom",
+      "definition": "The concept, particularly emphasized by Jean-Paul Sartre, that humans are 'condemned to be free' because, without predetermined essences or divine guidance, they are solely responsible for designing their own moral codes and choices. This radical freedom can be agonizing due to the lack of external guidelines.",
+      "prerequisites": [
+        "Existentialism",
+        "Absence of predetermined purpose",
+        "Moral philosophy",
+        "Jean-Paul Sartre"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:20.924000",
+      "updated_at": "2026-05-22T11:09:20.924000"
+    },
+    {
+      "_id": "6a1039616786f498b571a41e",
+      "name": "Authenticity (Existentialism)",
+      "name_lower": "authenticity (existentialism)",
+      "definition": "In existentialism, authenticity means accepting the full weight of one's freedom and responsibility in the face of the absurd. It involves recognizing that all meaning in one's life is self-created and actively living in accordance with one's chosen values, rather than external pressures.",
+      "prerequisites": [
+        "Existentialism",
+        "Existential Freedom",
+        "The Absurd",
+        "Self-created meaning"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:21.955000",
+      "updated_at": "2026-05-22T11:09:21.955000"
+    },
+    {
+      "_id": "6a1039626786f498b571a41f",
+      "name": "Bad Faith (Existentialism)",
+      "name_lower": "bad faith (existentialism)",
+      "definition": "Jean-Paul Sartre's concept describing a refusal to accept the inherent freedom and responsibility of one's existence. It involves self-deception, such as pretending that external authorities or pre-existing roles dictate one's purpose, thereby avoiding the agony of creating one's own meaning.",
+      "prerequisites": [
+        "Existentialism",
+        "Existential Freedom",
+        "Authenticity",
+        "Jean-Paul Sartre"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=YaDvRdLMkHs",
+          "video_id": "YaDvRdLMkHs",
+          "ingested_at": "2026-05-22T11:09:13.227502+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:22.962000",
+      "updated_at": "2026-05-22T11:09:22.962000"
+    },
+    {
+      "_id": "6a1039826786f498b571a420",
+      "name": "Algorithm Efficiency",
+      "name_lower": "algorithm efficiency",
+      "definition": "Algorithm efficiency refers to the amount of resources, such as time and space, an algorithm requires to solve a problem. It's crucial for processing large inputs effectively, as inefficient algorithms can become unfeasible even on modern computers.",
+      "prerequisites": [
+        "Algorithms",
+        "Input Size",
+        "Run Times"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:54.297000",
+      "updated_at": "2026-05-22T11:09:54.297000"
+    },
+    {
+      "_id": "6a1039836786f498b571a421",
+      "name": "Asymptotic Complexity",
+      "name_lower": "asymptotic complexity",
+      "definition": "Asymptotic complexity describes how an algorithm's performance scales with the size of its input as the input size grows infinitely large. It provides a way to compare the inherent efficiency of different algorithms independently of specific hardware or constant factors.",
+      "prerequisites": [
+        "Algorithms",
+        "Input Size",
+        "Run Times"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:55.310000",
+      "updated_at": "2026-05-22T11:09:55.310000"
+    },
+    {
+      "_id": "6a1039846786f498b571a422",
+      "name": "Theta Notation (\u0398)",
+      "name_lower": "theta notation (\u03b8)",
+      "definition": "Theta notation (\u0398) is a mathematical notation used to precisely describe the asymptotic tight bound of an algorithm's running time or space requirements. It means the algorithm's performance will be both upper-bounded and lower-bounded by the given function, ignoring constant factors and smaller terms.",
+      "prerequisites": [
+        "Asymptotic Complexity",
+        "Big O Notation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:56.319000",
+      "updated_at": "2026-05-22T11:09:56.319000"
+    },
+    {
+      "_id": "6a1039856786f498b571a423",
+      "name": "Peak Finding Problem",
+      "name_lower": "peak finding problem",
+      "definition": "The peak finding problem involves identifying an element within an array or grid that is greater than or equal to all its immediate neighbors. In a one-dimensional array, an element is a peak if it is greater than or equal to both its left and right neighbors, with special conditions for boundary elements.",
+      "prerequisites": [
+        "Arrays",
+        "Comparison Operations"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:57.346000",
+      "updated_at": "2026-05-22T11:10:09.640000"
+    },
+    {
+      "_id": "6a1039866786f498b571a424",
+      "name": "Divide and Conquer Strategy",
+      "name_lower": "divide and conquer strategy",
+      "definition": "The divide and conquer strategy is an algorithmic paradigm that recursively breaks down a problem into two or more subproblems of the same or related type, until these become simple enough to be solved directly. The solutions to the subproblems are then combined to give a solution to the original problem.",
+      "prerequisites": [
+        "Algorithms",
+        "Recursion",
+        "Problem Solving"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:58.401000",
+      "updated_at": "2026-05-22T11:10:12.788000"
+    },
+    {
+      "_id": "6a1039876786f498b571a425",
+      "name": "Recurrence Relation",
+      "name_lower": "recurrence relation",
+      "definition": "A recurrence relation is an equation that defines a sequence recursively, where each term or function value is defined as a function of its preceding terms. In algorithm analysis, it describes the running time of a recursive algorithm in terms of the running time on smaller inputs.",
+      "prerequisites": [
+        "Recursive Algorithms",
+        "Algorithm Analysis"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:09:59.407000",
+      "updated_at": "2026-05-22T11:10:14.924000"
+    },
+    {
+      "_id": "6a1039886786f498b571a426",
+      "name": "Data Structure",
+      "name_lower": "data structure",
+      "definition": "A data structure is a particular way of organizing and storing data in a computer so that it can be accessed and modified efficiently. They are fundamental building blocks for creating efficient algorithms and managing information.",
+      "prerequisites": [
+        "Data Organization",
+        "Computer Memory"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:00.459000",
+      "updated_at": "2026-05-22T11:10:00.459000"
+    },
+    {
+      "_id": "6a1039896786f498b571a427",
+      "name": "Binary Search Trees",
+      "name_lower": "binary search trees",
+      "definition": "A binary search tree is a node-based binary tree data structure where each node has at most two children. It maintains the property that for any node, all values in its left subtree are less than the node's value, and all values in its right subtree are greater than the node's value.",
+      "prerequisites": [
+        "Data Structures",
+        "Trees",
+        "Binary Trees"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:01.428000",
+      "updated_at": "2026-05-22T11:10:01.428000"
+    },
+    {
+      "_id": "6a10398a6786f498b571a428",
+      "name": "Hash Tables",
+      "name_lower": "hash tables",
+      "definition": "A hash table, also known as a dictionary or hash map, is a data structure that implements an associative array abstract data type, mapping keys to values. It uses a hash function to compute an index into an array of buckets, from which the desired value can be found efficiently.",
+      "prerequisites": [
+        "Data Structures",
+        "Key-Value Pairs",
+        "Hash Function"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:02.447000",
+      "updated_at": "2026-05-22T11:10:02.447000"
+    },
+    {
+      "_id": "6a10398b6786f498b571a429",
+      "name": "Dynamic Programming",
+      "name_lower": "dynamic programming",
+      "definition": "Dynamic programming is an algorithm design technique used for solving complex problems by breaking them down into simpler subproblems. It typically involves storing the results of subproblems to avoid recomputing them, which can significantly reduce computation time for problems with overlapping subproblems and optimal substructure.",
+      "prerequisites": [
+        "Algorithms",
+        "Recursion",
+        "Optimization"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:03.518000",
+      "updated_at": "2026-05-22T11:10:03.518000"
+    },
+    {
+      "_id": "6a10398c6786f498b571a42a",
+      "name": "Graphs (Data Structure)",
+      "name_lower": "graphs (data structure)",
+      "definition": "A graph is a non-linear data structure consisting of a finite set of vertices (or nodes) and a set of edges connecting pairs of vertices. It is used to represent relationships between discrete objects and is fundamental in computer science for modeling various networks and systems.",
+      "prerequisites": [
+        "Data Structures",
+        "Vertices",
+        "Edges"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:04.523000",
+      "updated_at": "2026-05-22T11:10:04.523000"
+    },
+    {
+      "_id": "6a10398d6786f498b571a42b",
+      "name": "Worst-Case Complexity",
+      "name_lower": "worst-case complexity",
+      "definition": "Worst-case complexity measures the maximum amount of time or space an algorithm requires to complete its task, considering the input that would cause it to perform the most operations. It provides a guarantee that the algorithm will not take longer than this bound for any input of a given size.",
+      "prerequisites": [
+        "Algorithm Analysis",
+        "Input Size",
+        "Asymptotic Complexity"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:05.537000",
+      "updated_at": "2026-05-22T11:10:05.537000"
+    },
+    {
+      "_id": "6a10398e6786f498b571a42c",
+      "name": "Logarithmic Time Complexity (\u0398(log n))",
+      "name_lower": "logarithmic time complexity (\u03b8(log n))",
+      "definition": "A measure of an algorithm's performance where the time required grows proportionally to the logarithm of the input size, indicating very efficient scaling for large inputs.",
+      "prerequisites": [
+        "Algorithmic complexity",
+        "Big O notation",
+        "Logarithms"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:06.577000",
+      "updated_at": "2026-05-22T11:10:06.577000"
+    },
+    {
+      "_id": "6a10398f6786f498b571a42d",
+      "name": "Linear Time Complexity (\u0398(n))",
+      "name_lower": "linear time complexity (\u03b8(n))",
+      "definition": "A measure of an algorithm's performance where the time required grows directly proportionally to the size of the input, meaning processing time increases steadily with more data.",
+      "prerequisites": [
+        "Algorithmic complexity",
+        "Big O notation"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:07.568000",
+      "updated_at": "2026-05-22T11:10:07.568000"
+    },
+    {
+      "_id": "6a1039926786f498b571a42e",
+      "name": "Greedy Ascent Algorithm",
+      "name_lower": "greedy ascent algorithm",
+      "definition": "An algorithm, often used for optimization or finding peaks, that at each step makes the locally optimal choice hoping to find a global optimum. For peak finding, it moves to the highest adjacent element.",
+      "prerequisites": [
+        "Algorithms",
+        "Local optimum"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:10.714000",
+      "updated_at": "2026-05-22T11:10:10.714000"
+    },
+    {
+      "_id": "6a1039936786f498b571a42f",
+      "name": "Worst Case Analysis (Algorithms)",
+      "name_lower": "worst case analysis (algorithms)",
+      "definition": "The process of determining the maximum amount of resources (like time or memory) an algorithm might use for any input of a given size, representing the least efficient scenario.",
+      "prerequisites": [
+        "Algorithmic complexity",
+        "Algorithm performance"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:11.753000",
+      "updated_at": "2026-05-22T11:10:11.753000"
+    },
+    {
+      "_id": "6a1039956786f498b571a430",
+      "name": "Algorithm Correctness",
+      "name_lower": "algorithm correctness",
+      "definition": "A fundamental property of an algorithm meaning that for every valid input, it terminates and produces the correct output as specified by the problem definition.",
+      "prerequisites": [
+        "Algorithms",
+        "Input/Output specifications"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:13.847000",
+      "updated_at": "2026-05-22T11:10:13.847000"
+    },
+    {
+      "_id": "6a1039976786f498b571a431",
+      "name": "Base Case (Recursion)",
+      "name_lower": "base case (recursion)",
+      "definition": "The non-recursive condition within a recursive algorithm that specifies when the recursion should stop, providing a direct solution and preventing infinite loops.",
+      "prerequisites": [
+        "Recursive algorithms"
+      ],
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=HtSuA80QTyo",
+          "video_id": "HtSuA80QTyo",
+          "ingested_at": "2026-05-22T11:09:53.318641+00:00"
+        }
+      ],
+      "created_at": "2026-05-22T11:10:15.910000",
+      "updated_at": "2026-05-22T11:10:15.910000"
+    }
+  ]
+}

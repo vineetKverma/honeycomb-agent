@@ -1,0 +1,6 @@
+google-genai
+pymongo
+youtube-transcript-api==1.2.4
+python-dotenv
+rich
+pydantic

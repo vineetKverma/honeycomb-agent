@@ -141,3 +141,31 @@ This spawns the MongoDB MCP server (via `cmd /c npx -y mongodb-mcp-server` on Wi
 - **`npx not found`:** Node.js is not on `PATH`. Reinstall Node.js (the installer adds it to `PATH`) and open a fresh PowerShell session.
 - **Hang / timeout (60s):** the `MONGODB_URI` is likely wrong, or your current IP is not on the Atlas **Network Access** allowlist. Verify both, then retry.
 - **`ENOENT` or shell errors on Windows:** `npx` is `npx.cmd` and cannot be exec'd directly. The smoke test routes through `cmd /c` on Windows for this reason; if you adapt the spawn code, preserve that.
+
+## Phase A2 — Honeycomb Agent (ADK)
+
+The Honeycomb agent is built on [Google's Agent Development Kit (ADK)](https://google.github.io/adk-docs/). It plans multi-step learning workflows and calls Honeycomb's pipeline functions as tools.
+
+The agent currently exposes five tools backed by direct Python functions (faster to iterate on): `ingest_learning_source`, `quiz_concept`, `grade_my_answer`, `list_my_concepts`, and `get_concept_details`. (The MongoDB MCP server is wired in separately in Phase A3.)
+
+### Setup
+
+```bash
+pip install -r requirements.txt
+```
+
+Authentication: the CLI defaults `GOOGLE_API_KEY` to `GEMINI_API_KEY` from your `.env` (AI Studio backend). If you have Vertex AI / Express Mode env vars already set, those are respected and not overwritten.
+
+### Run
+
+```bash
+python scripts/run_agent_cli.py
+```
+
+This opens a local REPL backed by ADK's `InMemoryRunner`. Type `exit` or press Ctrl+C to quit.
+
+### Try these prompts
+
+- `Ingest https://www.youtube.com/watch?v=aircAruvnKk`
+- `What concepts do I know about neural networks?`
+- `Quiz me on Backpropagation`

@@ -33,14 +33,15 @@ def run_pipeline(url: str, verbose: bool = True) -> dict:
         "ingested_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    created_count = merged_count = 0
+    created_names: list[str] = []
+    merged_names: list[str] = []
     log("[bold]Linking concepts to knowledge graph…[/bold]")
     for concept in concepts:
         action, oid = link.link_or_create(concept, source_meta)
         if action == "created":
-            created_count += 1
+            created_names.append(concept["name"])
         else:
-            merged_count += 1
+            merged_names.append(concept["name"])
         log(f"  [{action}] {concept['name']}  [dim]({oid})[/dim]")
 
     elapsed = time.perf_counter() - t0
@@ -49,18 +50,21 @@ def run_pipeline(url: str, verbose: bool = True) -> dict:
         "video_id": meta["video_id"],
         "transcript_chars": len(text),
         "total_concepts": len(concepts),
-        "created_count": created_count,
-        "merged_count": merged_count,
+        "created_count": len(created_names),
+        "merged_count": len(merged_names),
+        "created_names": created_names,
+        "merged_names": merged_names,
         "concept_names": [c["name"] for c in concepts],
         "elapsed_seconds": round(elapsed, 2),
     }
 
     if verbose:
+        _list_fields = {"created_names", "merged_names", "concept_names"}
         table = Table(title="Pipeline summary", show_header=True)
         table.add_column("Metric")
         table.add_column("Value", style="cyan")
         for k, v in summary.items():
-            if k != "concept_names":
+            if k not in _list_fields:
                 table.add_row(k, str(v))
         _console.print(table)
 

@@ -1,4 +1,4 @@
-"""Mastery page: read-only stats, recent attempts, and a prereq tag cloud.
+"""Mastery page: read-only stats, recent attempts, and a prereq chip list.
 
 No Gemini calls. All DB reads are cached for 60s to avoid hammering Atlas.
 """
@@ -8,6 +8,14 @@ import streamlit as st
 
 import db
 import mastery
+
+# (background, foreground) per mastery level for the metric cards.
+_LEVEL_STYLE = {
+    "weak": ("#d62728", "#ffffff"),
+    "developing": ("#ff7f0e", "#1a1a1a"),
+    "solid": ("#2ca02c", "#ffffff"),
+    "untested": ("#6c757d", "#ffffff"),
+}
 
 
 @st.cache_data(ttl=60)
@@ -20,7 +28,12 @@ def _level_counts() -> dict:
 
 
 @st.cache_data(ttl=60)
-def _recent_events(n: int = 20) -> list[dict]:
+def _due_count() -> int:
+    return len(mastery.get_review_candidates(limit=1000))
+
+
+@st.cache_data(ttl=60)
+def _recent_events(n: int = 10) -> list[dict]:
     docs = (
         db.get_mastery_collection()
         .find({}, {"_id": 0, "concept_name": 1, "score": 1, "timestamp": 1})
@@ -50,28 +63,57 @@ def _top_prereqs(n: int = 10) -> list[tuple[str, int]]:
     return counter.most_common(n)
 
 
+def _level_card(col, label: str, value: int, level: str) -> None:
+    bg, fg = _LEVEL_STYLE[level]
+    col.markdown(
+        f"<div class='hc-card' style='background:{bg};color:{fg};text-align:center'>"
+        f"<div style='font-size:2rem;font-weight:800'>{value}</div>"
+        f"<div style='font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em'>{label}</div>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_mastery_page() -> None:
     st.header("Mastery overview")
 
-    counts = _level_counts()
-    total = sum(counts.values())
-    cols = st.columns(5)
-    cols[0].metric("Total concepts", total)
-    cols[1].metric("Weak", counts["weak"])
-    cols[2].metric("Developing", counts["developing"])
-    cols[3].metric("Solid", counts["solid"])
-    cols[4].metric("Untested", counts["untested"])
+    due = _due_count()
+    hero_l, hero_r = st.columns([3, 1])
+    with hero_l:
+        st.markdown(
+            f"<div class='hc-card' style='background:#1f2a37;color:#e8eaed'>"
+            f"<div style='font-size:1.4rem;font-weight:700'>{due} concept(s) due for review today</div>"
+            f"<div class='hc-tagline'>Spaced repetition keeps weak and stale concepts fresh.</div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+    with hero_r:
+        st.write("")
+        if st.button("Start review", type="primary", use_container_width=True):
+            st.session_state["_goto"] = "Daily Review"
+            st.rerun()
 
-    st.subheader("Recent quiz attempts")
-    rows = _recent_events(20)
+    st.write("")
+    counts = _level_counts()
+    cols = st.columns(4)
+    _level_card(cols[0], "Weak", counts["weak"], "weak")
+    _level_card(cols[1], "Developing", counts["developing"], "developing")
+    _level_card(cols[2], "Solid", counts["solid"], "solid")
+    _level_card(cols[3], "Untested", counts["untested"], "untested")
+
+    st.subheader("Recent activity")
+    rows = _recent_events(10)
     if rows:
-        st.dataframe(rows, use_container_width=True)
+        st.dataframe(rows, use_container_width=True, hide_index=True)
     else:
         st.info("No quiz attempts recorded yet.")
 
     st.subheader("Top prerequisites")
     top = _top_prereqs(10)
     if top:
-        st.markdown("  ".join(f"`{name}` x{cnt}" for name, cnt in top))
+        st.markdown(
+            "".join(f"<span class='hc-chip'>{name} ({cnt})</span>" for name, cnt in top),
+            unsafe_allow_html=True,
+        )
     else:
         st.info("No prerequisites recorded yet.")

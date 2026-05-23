@@ -12,17 +12,24 @@ import link
 _console = Console()
 
 
-def run_pipeline(url: str, verbose: bool = True) -> dict:
+def run_pipeline(url: str, verbose: bool = True, progress_callback=None) -> dict:
     def log(msg: str) -> None:
         if verbose:
             _console.print(msg)
 
+    def progress(frac: float, label: str) -> None:
+        # Optional UI hook (e.g. a Streamlit progress bar); no-op by default.
+        if progress_callback:
+            progress_callback(frac, label)
+
     t0 = time.perf_counter()
 
+    progress(0.1, "Fetching transcript")
     log(f"[bold]Fetching transcript…[/bold] {url}")
     text, meta = ingest.fetch_youtube_transcript(url)
     log(f"  {len(text):,} chars | {meta['segment_count']} segments | {meta['duration_seconds']:.0f}s")
 
+    progress(0.4, "Extracting concepts")
     log("[bold]Extracting concepts…[/bold]")
     concepts = extract.extract_concepts(text, meta)
     log(f"  {len(concepts)} concepts extracted")
@@ -35,6 +42,7 @@ def run_pipeline(url: str, verbose: bool = True) -> dict:
 
     created_names: list[str] = []
     merged_names: list[str] = []
+    progress(0.7, "Linking concepts")
     log("[bold]Linking concepts to knowledge graph…[/bold]")
     for concept in concepts:
         action, oid = link.link_or_create(concept, source_meta)
@@ -58,6 +66,7 @@ def run_pipeline(url: str, verbose: bool = True) -> dict:
         "elapsed_seconds": round(elapsed, 2),
     }
 
+    progress(1.0, "Done")
     if verbose:
         _list_fields = {"created_names", "merged_names", "concept_names"}
         table = Table(title="Pipeline summary", show_header=True)

@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(venv/Scripts/python.exe scripts/test_api_key.py AIzaSyDrvnm7GEUNBcJ0Vc4cT-q20VoHAcx-Cz8)"
-    ]
-  }
-}

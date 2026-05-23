@@ -18,12 +18,11 @@ def _extract_video_id(url: str) -> str:
 def fetch_youtube_transcript(url: str) -> tuple[str, dict]:
     video_id = _extract_video_id(url)
     try:
-        fetched = YouTubeTranscriptApi().fetch(video_id, languages=["en"])
-        segments = fetched.to_raw_data()
+        segments = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
     except (NoTranscriptFound, TranscriptsDisabled) as e:
         raise RuntimeError(
             f"No English transcript available for video '{video_id}'. "
-            "Try a different video - lectures, talks, and tutorials usually have captions."
+            "Try a different video — lectures, talks, and tutorials usually have captions."
         ) from e
 
     text = " ".join(seg["text"] for seg in segments)

@@ -19,21 +19,25 @@ from app.pages_review import render_review_page
 
 st.set_page_config(page_title="Honeycomb", layout="wide", initial_sidebar_state="expanded")
 
-NAV_OPTIONS = ["Ingest", "Graph", "Daily Review", "Mastery"]
+# Graph is the landing page so the hero is the first thing users see.
+NAV_OPTIONS = ["Graph", "Ingest", "Daily Review", "Mastery"]
 
 _CSS = """
 <style>
-#MainMenu, footer {visibility: hidden;}
-.hc-card { border: 1px solid rgba(250,250,250,0.15); border-radius: 12px; padding: 16px; }
-[data-testid="stMetricValue"] { font-size: 2.1rem; }
+#MainMenu, header, footer {visibility: hidden;}
+.stApp { background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%); }
+.hc-card { border: 1px solid rgba(250,250,250,0.12); border-radius: 12px; padding: 14px;
+           background: rgba(255,255,255,0.02); }
+[data-testid="stMetricValue"] { font-size: 2rem; }
 .hc-title { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin: 0; }
 .hc-tagline { color: #9aa0a6; font-size: 0.95rem; margin-top: 2px; }
 .hc-count { text-align: right; }
 .hc-count .n { font-size: 2.2rem; font-weight: 800; color: #f5b301; line-height: 1.1; }
 .hc-count .l { color: #9aa0a6; font-size: 0.8rem; letter-spacing: 0.06em; }
-.hc-def { line-height: 1.25; }
 .hc-chip { display:inline-block; padding:4px 10px; margin:3px; border-radius:14px;
            background:#2b2f36; color:#e8eaed; font-size:0.85rem; }
+section[data-testid="stSidebar"] { background: #0d0d0d; }
+section[data-testid="stSidebar"] .stRadio label { padding: 4px 6px; border-radius: 8px; }
 </style>
 """
 
@@ -46,13 +50,14 @@ def _total_concepts() -> int:
 def main() -> None:
     st.markdown(_CSS, unsafe_allow_html=True)
 
-    # Programmatic page switch (e.g. mastery "Start review"): set the radio's
+    # Programmatic page switch (e.g. graph "Quiz me on this"): set the radio's
     # session value BEFORE the widget is instantiated -- Streamlit forbids
     # changing a widget's state after it is created in the same run.
     if "_goto" in st.session_state:
         st.session_state["nav"] = st.session_state.pop("_goto")
 
     st.sidebar.title("Honeycomb")
+    st.sidebar.caption("Your evolving learning graph")
     page = st.sidebar.radio("Navigate", NAV_OPTIONS, key="nav")
 
     head, count = st.columns([4, 1])
@@ -76,8 +81,8 @@ def main() -> None:
     st.divider()
 
     {
-        "Ingest": render_ingest_page,
         "Graph": render_graph_page,
+        "Ingest": render_ingest_page,
         "Daily Review": render_review_page,
         "Mastery": render_mastery_page,
     }[page]()

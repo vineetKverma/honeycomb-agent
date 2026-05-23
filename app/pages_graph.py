@@ -1,128 +1,165 @@
-"""Graph page: concepts as nodes, prerequisite links as edges, colored by domain."""
-from collections import Counter
+"""Graph page: the knowledge-graph hero. Nodes colored by MASTERY level.
+
+Left column = the graph; right column = a detail panel for the selected node.
+Clicking a node selects it; a selectbox is the reliable fallback selector.
+No Gemini calls -- mastery is read via mastery.compute_mastery (cached 30s).
+"""
+from bson import ObjectId
 
 import streamlit as st
 from streamlit_agraph import Config, Edge, Node, agraph
 
 import db
+import mastery
 
-_PALETTE = ["#e6550d", "#3182bd", "#31a354", "#756bb1", "#d6616b"]
-_NEUTRAL = "#888888"  # node not in any domain anchor's component
-_ORPHAN = "#444444"   # node with no edges at all
+_COLOR = {"weak": "#ef4444", "developing": "#f59e0b", "solid": "#10b981", "untested": "#6b7280"}
+_SIZE = {"weak": 30, "developing": 25, "solid": 25, "untested": 15}
+_LEVELS = ["weak", "developing", "solid", "untested"]
 
 
-@st.cache_data(ttl=60)
-def _load_concepts() -> list[dict]:
-    docs = db.get_collection().find(
-        {}, {"name": 1, "definition": 1, "prerequisites": 1, "_id": 0}
+@st.cache_data(ttl=30)
+def _load_graph_data() -> list[dict]:
+    """All concepts plus their (expensive) mastery level. Cached to spare Atlas."""
+    rows = []
+    for d in db.get_collection().find({}, {"name": 1, "definition": 1, "prerequisites": 1}):
+        info = mastery.compute_mastery(d["_id"])
+        rows.append(
+            {
+                "id": str(d["_id"]),
+                "name": d.get("name", ""),
+                "definition": d.get("definition", ""),
+                "prerequisites": d.get("prerequisites", []),
+                "level": info["mastery_level"],
+                "days": info["days_since_last_review"],
+            }
+        )
+    return rows
+
+
+def _legend(total: int) -> None:
+    dots = "".join(
+        f"<span style='display:inline-block;width:11px;height:11px;border-radius:50%;"
+        f"background:{_COLOR[lv]};margin:0 5px 0 14px'></span>"
+        f"<span style='color:#cbd5e1;font-size:0.85rem'>{lv.capitalize()}</span>"
+        for lv in _LEVELS
     )
-    return [
-        {
-            "name": d.get("name", ""),
-            "definition": d.get("definition", ""),
-            "prerequisites": d.get("prerequisites", []),
-        }
-        for d in docs
-        if d.get("name")
-    ]
-
-
-def _build_edges(concepts, by_lower):
-    edges = []
-    for c in concepts:
-        for pre in c.get("prerequisites", []):
-            src = by_lower.get(pre.lower().strip())
-            if src and src != c["name"]:
-                edges.append((src, c["name"]))
-    return edges
-
-
-def _components(names, edges):
-    adj = {n: set() for n in names}
-    for s, t in edges:
-        adj[s].add(t)
-        adj[t].add(s)
-    comp, cid = {}, 0
-    for n in names:
-        if n in comp:
-            continue
-        stack, comp[n] = [n], cid
-        while stack:
-            for nb in adj[stack.pop()]:
-                if nb not in comp:
-                    comp[nb] = cid
-                    stack.append(nb)
-        cid += 1
-    return comp, adj
-
-
-def _anchor_colors(concepts, by_lower, comp):
-    """Top-5 prereq strings that name a real concept become domain anchors;
-    each anchor's connected component gets a distinct palette color."""
-    counter: Counter = Counter()
-    for c in concepts:
-        for pre in c.get("prerequisites", []):
-            key = pre.lower().strip()
-            if key in by_lower:
-                counter[by_lower[key]] += 1
-    anchors = [name for name, _ in counter.most_common(5)]
-    comp_color = {}
-    for i, anchor in enumerate(anchors):
-        comp_color.setdefault(comp[anchor], _PALETTE[i % len(_PALETTE)])
-    return anchors, comp_color
+    st.markdown(
+        f"<div class='hc-card' style='padding:8px 12px'>{dots}"
+        f"<span style='float:right;color:#9aa0a6;font-size:0.85rem'>{total} concepts</span></div>",
+        unsafe_allow_html=True,
+    )
 
 
 def render_graph_page() -> None:
-    st.header("Knowledge graph")
-    concepts = _load_concepts()
+    concepts = _load_graph_data()
     if not concepts:
         st.info("No concepts yet. Ingest a source first.")
         return
 
-    names = [c["name"] for c in concepts]
-    by_lower = {c["name"].lower(): c["name"] for c in concepts}
-    edges = _build_edges(concepts, by_lower)
-    comp, adj = _components(names, edges)
-    anchors, comp_color = _anchor_colors(concepts, by_lower, comp)
+    _legend(len(concepts))
 
-    focus = st.selectbox("Focus domain", ["All"] + anchors)
+    f1, f2 = st.columns(2)
+    levels = f1.multiselect("Show mastery levels", _LEVELS, default=_LEVELS)
+    search = f2.text_input("Search concepts", value="").strip().lower()
 
-    orphans = sum(1 for n in names if not adj[n])
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Nodes", len(names))
-    c2.metric("Edges", len(edges))
-    c3.metric("Orphans", orphans)
+    by_lower = {c["name"].lower(): c for c in concepts}
+    visible = {
+        c["name"]
+        for c in concepts
+        if c["level"] in levels and (not search or search in c["name"].lower())
+    }
 
-    if focus == "All":
-        visible = set(names)
-    else:
-        visible = {n for n in names if comp[n] == comp[focus]}
+    edges_raw = []
+    for c in concepts:
+        for pre in c.get("prerequisites", []):
+            src = by_lower.get(pre.lower().strip())
+            if src and src["name"] != c["name"]:
+                edges_raw.append((src["name"], c["name"]))
 
-    nodes = []
-    for n in names:
-        if n not in visible:
-            continue
-        if not adj[n]:
-            nodes.append(Node(id=n, label=n, size=15, color=_ORPHAN))
-        else:
-            nodes.append(Node(id=n, label=n, size=25, color=comp_color.get(comp[n], _NEUTRAL)))
-    vis_edges = [Edge(source=s, target=t) for s, t in edges if s in visible and t in visible]
-
-    config = Config(
-        width=1200,
-        height=600,
-        directed=True,
-        physics=True,
-        hierarchical=False,
-        nodeHighlightBehavior=True,
-        highlightColor="#F7A7A6",
-    )
-    clicked = agraph(nodes=nodes, edges=vis_edges, config=config)
-
-    if clicked:
-        doc = next((c for c in concepts if c["name"] == clicked), None)
-        if doc:
-            prereqs = ", ".join(doc.get("prerequisites", [])) or "(none)"
-            st.info(
-                f"**{doc['name']}**\n\n{doc.get('definition', '')}\n\n**Prerequisites:** {prereqs}"
+    left, right = st.columns([3, 1])
+    with left:
+        nodes = [
+            Node(
+                id=c["name"],
+                label=c["name"],
+                color=_COLOR[c["level"]],
+                size=_SIZE[c["level"]],
+                font={"color": "#ffffff", "size": 12},
             )
+            for c in concepts
+            if c["name"] in visible
+        ]
+        edges = [
+            Edge(source=s, target=t, color="#444444", width=1)
+            for s, t in edges_raw
+            if s in visible and t in visible
+        ]
+        config = Config(
+            height=700,
+            width=900,
+            directed=True,
+            physics=True,
+            hierarchical=False,
+            nodeHighlightBehavior=True,
+            highlightColor="#ffffff",
+        )
+        clicked = agraph(nodes=nodes, edges=edges, config=config)
+
+    with right:
+        _render_panel(concepts, by_lower, clicked)
+
+
+def _render_panel(concepts: list[dict], by_lower: dict, clicked) -> None:
+    names = sorted(c["name"] for c in concepts)
+    # A click sets the selectbox value BEFORE the widget is instantiated, so the
+    # click and the fallback selectbox share one source of truth.
+    if clicked and clicked in names:
+        st.session_state["graph_pick"] = clicked
+    picked = st.selectbox("Inspect concept", ["-"] + names, key="graph_pick")
+
+    if picked == "-":
+        st.subheader("Concept details")
+        st.caption("Click a node (or pick one) to inspect it.")
+        return
+
+    c = by_lower[picked.lower()]
+    color = _COLOR[c["level"]]
+    st.markdown(f"### {c['name']}")
+    st.markdown(
+        f"<span style='background:{color};color:#0a0a0a;padding:2px 10px;border-radius:10px;"
+        f"font-weight:700;font-size:0.8rem'>{c['level'].upper()}</span>",
+        unsafe_allow_html=True,
+    )
+    st.write(c["definition"])
+    if c.get("prerequisites"):
+        st.markdown(
+            "".join(f"<span class='hc-chip'>{p}</span>" for p in c["prerequisites"]),
+            unsafe_allow_html=True,
+        )
+    days = c["days"]
+    st.caption("Never quizzed" if days is None else f"Last reviewed: {days} day(s) ago")
+
+    b1, b2 = st.columns(2)
+    if b1.button("Quiz me on this", key="g_quiz", type="primary"):
+        st.session_state["review_focus"] = c["name"]
+        st.session_state["_goto"] = "Daily Review"
+        st.rerun()
+    if b2.button("Show full history", key="g_hist"):
+        st.session_state["g_hist_open"] = not st.session_state.get("g_hist_open", False)
+    if st.session_state.get("g_hist_open"):
+        _render_history(c["id"])
+
+
+def _render_history(concept_id: str) -> None:
+    events = list(
+        db.get_mastery_collection()
+        .find({"concept_id": ObjectId(concept_id)}, {"_id": 0, "score": 1, "timestamp": 1})
+        .sort("timestamp", -1)
+    )
+    if not events:
+        st.caption("No quiz history yet.")
+        return
+    for e in events:
+        ts = e.get("timestamp")
+        when = ts.strftime("%Y-%m-%d %H:%M") if ts else "?"
+        st.write(f"- {when} -- score {e.get('score')}/5")

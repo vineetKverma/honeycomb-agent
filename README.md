@@ -1,40 +1,87 @@
 # Honeycomb
 
-> Turn YouTube transcripts into a self-linking knowledge graph — powered by Gemini and MongoDB Atlas Vector Search.
+> A multi-step learning agent that turns YouTube transcripts into a self-linking, mastery-tracked knowledge graph.
 
-## What it does
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://honeycomb-agent-jpz3bblmwwytqhpkwwhvxu.streamlit.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Built with Gemini](https://img.shields.io/badge/Built_with-Gemini_2.5_Flash-4285F4?logo=google&logoColor=white)](https://ai.google.dev)
 
-1. Fetches transcripts from YouTube videos via URL or video ID.
-2. Extracts discrete learning concepts (title, summary, tags) using Gemini.
-3. Embeds each concept with Gemini's embedding model and stores them in MongoDB Atlas.
-4. Links related concepts automatically via Atlas Vector Search, forming a knowledge graph.
+**Live demo:** https://honeycomb-agent-jpz3bblmwwytqhpkwwhvxu.streamlit.app
+**Repo:** https://github.com/vineetKverma/honeycomb-agent
 
-## Setup
+## What is Honeycomb
 
-### Prerequisites
+Watching educational videos is easy; remembering and connecting what you learn is hard. Honeycomb is an agent that ingests a YouTube transcript, uses Gemini to extract atomic learning concepts, and links each one into a growing knowledge graph using MongoDB Atlas Vector Search — so related ideas connect automatically instead of living as isolated notes. It then quizzes you, grades your answers, and tracks per-concept mastery over time, surfacing a spaced-repetition daily review of your weakest and stalest concepts. The result is a living map of what you know, color-coded by how well you know it.
 
-- Python 3.10+
-- MongoDB Atlas cluster with Vector Search enabled
-- Gemini API key
+## Screenshots
 
-### Install
+| Knowledge graph | Daily review | Quiz |
+|---|---|---|
+| ![Graph](docs/screenshots/graph.png) | ![Review](docs/screenshots/review.png) | ![Quiz](docs/screenshots/quiz.png) |
+
+## How it works
+
+```mermaid
+flowchart TD
+    A[User gives a YouTube URL] --> B[Fetch transcript]
+    B --> C[Gemini 2.5 Flash: extract atomic concepts]
+    C --> D[Embed each concept - 768-dim]
+    D --> E[Atlas Vector Search: find nearest concept]
+    E -->|score >= 0.95 and name match| F[Merge into existing node]
+    E -->|otherwise| G[Create new node]
+    F --> H[Knowledge graph updated]
+    G --> H
+    H --> I[Quiz -> grade -> record mastery event]
+    I --> J[Spaced-repetition daily review]
+    J -->|study more| A
+```
+
+## Architecture
+
+- **Agent** — Google Cloud Agent Builder (ADK) orchestrating Gemini 2.5 Flash with 6 tools and a multi-step instruction prompt.
+- **Extraction & embeddings** — Gemini 2.5 Flash for structured concept extraction; `gemini-embedding-001` for 768-dim vectors.
+- **Storage** — MongoDB Atlas: a `concepts` document collection plus an `mastery_events` append-only log.
+- **Linking** — MongoDB Atlas Vector Search (cosine, 768-dim) with a name-normalization gate to merge duplicates instead of creating them.
+- **Partner integration** — MongoDB MCP Server (stdio) gives the agent read-only `find` / `aggregate` / `count` / `list-collections` tools.
+- **Frontend** — Streamlit (4 pages) on Streamlit Cloud; the knowledge-graph hero is rendered with `streamlit-agraph`, colored by mastery level.
+
+## Multi-step agent in action
+
+The ADK agent exposes six tools:
+
+1. **`ingest_learning_source`** — fetch transcript, extract concepts, embed, and link into the graph.
+2. **`quiz_concept`** — generate one understanding-focused question for a concept.
+3. **`grade_my_answer`** — grade a free-text answer fairly and encouragingly.
+4. **`record_quiz_attempt`** — append the outcome to the mastery event log.
+5. **`daily_review`** — return the weakest / most-overdue concepts for spaced repetition.
+6. **MongoDB MCP tools** — `find` / `aggregate` / `count` / `list-collections` for agent-mediated graph queries.
+
+**Sample mission:** *"Ingest this 3Blue1Brown video, tell me where I'm weakest, and quiz me."*
+The agent plans aloud, then chains: `ingest_learning_source` -> MCP `count`/`find` -> `daily_review` -> `quiz_concept` -> `grade_my_answer` -> `record_quiz_attempt`.
+
+## Why MongoDB
+
+- **Document model** fits concepts naturally — a node's definition, prerequisites, sources, and embedding live in one document, no joins.
+- **Atlas Vector Search** powers the core USP: new concepts are linked by semantic similarity, turning isolated notes into a graph.
+- **MongoDB MCP Server** is a first-class way to give an LLM agent safe, read-only database access as tools — the partner integration is in the agent's actual call path, not bolted on.
+
+## Local setup
 
 ```bash
+git clone https://github.com/vineetKverma/honeycomb-agent.git
+cd honeycomb-agent
+
 python -m venv venv
 # Windows
 venv\Scripts\activate
-# macOS/Linux
+# macOS / Linux
 source venv/bin/activate
 
 pip install -r requirements.txt
+cp .env.example .env   # then fill in the values below
 ```
 
-### Configure
-
-```bash
-cp .env.example .env
-# Fill in all values in .env
-```
+### Environment variables (`.env`)
 
 | Variable | Description |
 |---|---|
@@ -42,262 +89,93 @@ cp .env.example .env
 | `MONGODB_URI` | Atlas connection string |
 | `MONGODB_DB` | Database name (e.g. `honeycomb`) |
 | `MONGODB_COLLECTION` | Collection name (e.g. `concepts`) |
-| `VECTOR_INDEX_NAME` | Atlas Search index name (e.g. `concept_vector_index`) |
+| `VECTOR_INDEX_NAME` | Atlas vector index name (e.g. `concept_vector_index`) |
 
-### Atlas Vector Search Index
+### Atlas vector index
 
-Create a vector search index on the collection with the following definition:
+Create a Vector Search index named `concept_vector_index` on `honeycomb.concepts`:
 
 ```json
 {
   "fields": [
-    {
-      "type": "vector",
-      "path": "embedding",
-      "numDimensions": 768,
-      "similarity": "cosine"
-    }
+    { "type": "vector", "path": "embedding", "numDimensions": 768, "similarity": "cosine" }
   ]
 }
 ```
 
-## How to run
+### Run
 
 ```bash
-# Ingest a single YouTube video
-python main.py ingest <youtube_url_or_id>
-
-# Query related concepts
-python main.py query "<concept text>"
+streamlit run app/streamlit_app.py      # the web app
+python scripts/run_agent_cli.py         # the ADK agent in a local REPL
+python scripts/test_mastery.py          # mastery logic test (zero Gemini quota)
 ```
 
-## POC Pass/Fail Criteria
+## MongoDB MCP smoke test
 
-| # | Metric | Pass |
-|---|---|---|
-| 1 | **Transcript fetch** | Successfully retrieves transcript for any public YouTube video |
-| 2 | **Concept extraction** | Gemini returns ≥ 3 structured concepts per ~10 min video |
-| 3 | **Storage** | All concepts persisted to MongoDB with embeddings (no write errors) |
-| 4 | **Vector linking** | Each concept returns ≥ 2 related concepts via similarity search (cosine score > 0.75) |
-| 5 | **End-to-end latency** | Full pipeline (fetch → extract → embed → store → link) completes in < 60 s per video |
-
-## Troubleshooting
-
-### Never drop the collection from the Atlas UI
-
-**Do NOT use the Atlas UI "Drop Collection" action.** Dropping the collection also destroys the associated vector search index, and you'll have to recreate the index by hand before vector search works again.
-
-To clear data safely (documents removed, collection and index preserved):
+The MCP server is a Node.js package. Install Node 18+, then:
 
 ```bash
-python scripts/wipe_concepts.py
-```
-
-### Vector search returns zero candidates
-
-If `vector_search` unexpectedly returns no results:
-
-1. Open the Atlas **Search Indexes** tab for the `honeycomb.concepts` collection.
-2. Confirm the `concept_vector_index` index exists and is in **Active** status (a freshly created index takes a short while to build).
-3. Run the sanity check:
-
-   ```bash
-   python scripts/check_vector_search.py
-   ```
-
-   It exits `0` if at least one candidate is returned, `1` otherwise.
-
-## Phase A1 — MongoDB MCP Setup
-
-Honeycomb talks to MongoDB through the official [MongoDB MCP server](https://github.com/mongodb-js/mongodb-mcp-server) (`mongodb-mcp-server` on npm), spawned locally as a subprocess over stdio. This is the hackathon's required partner integration.
-
-### Prerequisite: Node.js
-
-The MCP server is a Node.js package run via `npx`. Install **Node.js 18+** and verify:
-
-```bash
-node --version
-```
-
-### Run the smoke test
-
-```bash
+npm install -g mongodb-mcp-server
 python scripts/test_mongo_mcp.py
 ```
 
-This spawns the MongoDB MCP server (via `cmd /c npx -y mongodb-mcp-server` on Windows, `npx -y mongodb-mcp-server` on POSIX), performs the MCP `initialize` handshake using `MONGODB_URI` from your `.env`, lists the server's tools, then calls a read-only tool to confirm Atlas connectivity. The subprocess is closed automatically on exit. The first run may take a moment while `npx` downloads the package. The whole test times out after 60 seconds.
+This spawns the server over stdio, runs the MCP `initialize` handshake, lists the tools, and reads one document back to prove an end-to-end agent -> MCP -> Atlas round trip.
 
-**Expected output:**
-
-1. A list of MongoDB MCP tools, including `find`, `aggregate`, `count`, `list-collections`, `list-databases`, `insert-one`, `update-one`, `delete-one`, and others.
-2. A successful `list-collections` call against the `honeycomb` database showing `["concepts"]`.
-
-### Configuration
-
-`agent/mcp_config.json` declares the server. Its `MDB_MCP_CONNECTION_STRING` value is a placeholder — at runtime it is replaced with `MONGODB_URI` from `.env`.
-
-### Troubleshooting
-
-- **`npx not found`:** Node.js is not on `PATH`. Reinstall Node.js (the installer adds it to `PATH`) and open a fresh PowerShell session.
-- **Hang / timeout (60s):** the `MONGODB_URI` is likely wrong, or your current IP is not on the Atlas **Network Access** allowlist. Verify both, then retry.
-- **`ENOENT` or shell errors on Windows:** `npx` is `npx.cmd` and cannot be exec'd directly. The smoke test routes through `cmd /c` on Windows for this reason; if you adapt the spawn code, preserve that.
-
-## Phase A2 — Honeycomb Agent (ADK)
-
-The Honeycomb agent is built on [Google's Agent Development Kit (ADK)](https://google.github.io/adk-docs/). It plans multi-step learning workflows and calls Honeycomb's pipeline functions as tools.
-
-The agent currently exposes five tools backed by direct Python functions (faster to iterate on): `ingest_learning_source`, `quiz_concept`, `grade_my_answer`, `list_my_concepts`, and `get_concept_details`. (The MongoDB MCP server is wired in separately in Phase A3.)
-
-### Setup
-
-```bash
-pip install -r requirements.txt
-```
-
-Authentication: the CLI defaults `GOOGLE_API_KEY` to `GEMINI_API_KEY` from your `.env` (AI Studio backend). If you have Vertex AI / Express Mode env vars already set, those are respected and not overwritten.
-
-### Run
-
-```bash
-python scripts/run_agent_cli.py
-```
-
-This opens a local REPL backed by ADK's `InMemoryRunner`. Type `exit` or press Ctrl+C to quit.
-
-### Try these prompts
-
-- `Ingest https://www.youtube.com/watch?v=aircAruvnKk`
-- `What concepts do I know about neural networks?`
-- `Quiz me on Backpropagation`
-
-## Phase A3 — MongoDB MCP as an agent tool source
-
-### Architecture: direct Python for writes, MCP for reads
-
-The agent uses a hybrid tool set:
-
-| Path | Mechanism | Tools |
-|---|---|---|
-| Write / study (performance-critical) | Direct Python functions | `ingest_learning_source`, `quiz_concept`, `grade_my_answer` |
-| Graph queries (demo-visible) | **MongoDB MCP server** (read-only) | `find`, `aggregate`, `count`, `list-collections` |
-
-The MCP server is launched read-only (`--readOnly`), and the toolset is further restricted via `tool_filter` to those four query tools — writes never go through MCP. This satisfies the hackathon's MongoDB MCP partner-integration requirement: the agent demonstrably calls MongoDB MCP tools to answer the user's questions.
-
-`list_my_concepts` and `get_concept_details` from Phase A2 were **dropped** from the agent — those reads are now served by MCP `find`/`aggregate`. (The functions still exist in `agent/tools.py` but are no longer registered.)
-
-### Run the MCP integration test
-
-```bash
-python scripts/test_agent_with_mcp.py
-```
-
-This auto-runs two scripted queries and prints the agent's responses plus the tool calls it made.
-
-**Example run (tool calls are visible):**
+## Project structure
 
 ```
-you> How many concepts do I have in my knowledge graph?
-  [tool call] count({'database': 'honeycomb', 'collection': 'concepts', 'query': {}})
-  [tool done] count
-honeycomb> You have 23 concepts in your knowledge graph.
-
-you> Show me 3 concepts about philosophy.
-  [tool call] find({'database': 'honeycomb', 'collection': 'concepts', 'filter': {...}, 'limit': 3})
-  [tool done] find
-honeycomb> Here are 3 concepts related to philosophy: ...
+honeycomb-agent/
+├── agent/                 # ADK agent: tools, system prompt, MCP wiring
+│   ├── agent.py
+│   ├── tools.py
+│   ├── system_prompt.py
+│   └── mcp_config.json
+├── app/                   # Streamlit UI (graph / ingest / review / mastery)
+│   ├── streamlit_app.py
+│   └── pages_*.py
+├── scripts/               # smoke tests & utilities
+├── data/                  # test source URLs
+├── ingest.py              # transcript fetch
+├── extract.py             # Gemini concept extraction
+├── embed.py               # Gemini embeddings
+├── link.py                # vector-search merge-or-create
+├── quiz.py                # quiz generation + grading
+├── mastery.py             # mastery + spaced repetition
+├── pipeline.py            # ingest orchestration
+├── db.py / config.py      # Atlas + settings
+├── requirements.txt
+└── runtime.txt
 ```
 
-### Notes
+## Hackathon compliance
 
-- **Cleanup:** the `MCPToolset` owns a subprocess and stdio session. Both `run_agent_cli.py` and `test_agent_with_mcp.py` call `await mongo_mcp_toolset.close()` in a `finally` block on exit.
-- **Windows:** the MCP server is spawned via `cmd /c mongodb-mcp-server --readOnly` (the binary is a `.cmd` shim); POSIX execs it directly.
+- [x] Multi-step agent built on Google Cloud Agent Builder (ADK)
+- [x] Powered by Gemini 2.5 Flash
+- [x] MongoDB Atlas as the data layer (documents + Vector Search)
+- [x] MongoDB MCP Server partner integration in the agent's tool set
+- [x] Publicly deployed live demo (Streamlit Cloud)
+- [x] Public repository, MIT licensed
 
-## Phase A4 — Mastery tracking & spaced-repetition review
+## Limitations
 
-### Model: an event log, not an aggregate
+- **Hosted demo uses the direct DB path.** Streamlit Cloud cannot spawn the Node MCP subprocess, so the deployed app talks to Atlas directly via pymongo. The MongoDB MCP integration runs locally (via the agent CLI and `scripts/test_mongo_mcp.py`).
+- **Free-tier Gemini quota** is ~20 requests/day on 2.5 Flash, so quizzing and ingesting are paced; production would move to Vertex AI.
+- **Vector search** requires the Atlas index to be in `Active` status before linking works.
 
-Mastery is **derived**, never stored as a mutable number. Every quiz attempt appends one immutable document to the `mastery_events` collection:
+## What's next
 
-```
-{ concept_id, concept_name, score (0-5), user_answer_excerpt, missed_points, timestamp }
-```
+- More source types (PDFs, articles, podcasts).
+- Graph analytics: learning-path suggestions and prerequisite gap detection.
+- Vertex AI backend for production-grade quota.
+- Multi-user accounts and shareable graphs.
 
-`mastery.compute_mastery(concept_id)` reads a concept's events and derives its current state on demand (attempts, latest score, rolling average of the last 5 attempts, days since last review, level, and whether it is due). Because it is an append-only log, history is preserved and the scoring rules can change without a migration. The collection has only ordinary indexes (a unique index on `(concept_id, timestamp)`) — no vector index.
+## Acknowledgments
 
-### Mastery levels
+- Google Cloud Rapid Agent Hackathon (MongoDB partner track).
+- Google ADK, Gemini, and the MongoDB MCP Server team.
+- `streamlit-agraph` for the graph visualization, and 3Blue1Brown for excellent test content.
 
-Derived from the rolling average of the last 5 scores:
+## License
 
-| Level | Rule |
-|---|---|
-| `untested` | no events recorded |
-| `weak` | rolling avg < 2.5 |
-| `developing` | 2.5 <= rolling avg < 4.0 |
-| `solid` | rolling avg >= 4.0 |
-
-### How `daily_review` prioritizes
-
-`mastery.get_review_candidates(limit=5)` returns only concepts that are **due**, where due means:
-
-- `untested` (never quizzed) — always due, or
-- `weak` / `developing` and last reviewed >= 1 day ago, or
-- `solid` and last reviewed >= 7 days ago.
-
-Due concepts are ordered by priority tier: **weak → developing → untested → solid**, and within a tier the most overdue comes first. The agent calls `record_quiz_attempt` after every grade (so the log stays current) and `daily_review` when you ask what to study.
-
-### Test (uses zero Gemini quota)
-
-```bash
-python scripts/test_mastery.py
-```
-
-Pure Python — no model calls. It seeds backdated events on existing concepts (Neural Network → weak, Backpropagation or Sigmoid Function → solid, Derivative → weak), then asserts the level classification and that review candidates are priority-sorted (weak before solid) and all flagged due.
-
-## Phase A5 — Streamlit UI
-
-A 4-page Streamlit app over the existing pipeline/agent functions. It adds no new Gemini logic — pages call `pipeline`, `quiz`, and `mastery` directly. Gemini is only invoked when you click **Quiz me on this** or **Submit Answer** on the Daily Review page.
-
-### Pages
-
-| Page | What it does |
-|---|---|
-| **Ingest** | Paste a YouTube URL, run the pipeline, see created-vs-merged concepts |
-| **Graph** | Interactive concept graph (prerequisite edges) with node filter and node/edge/orphan stats |
-| **Daily Review** | Spaced-repetition picks; quiz yourself and record the result |
-| **Mastery** | Read-only stats: level counts, recent attempts, top prerequisites |
-
-Custom sidebar navigation (`st.sidebar.radio`) dispatches to a `render_*()` function per page — Streamlit's built-in `pages/` folder is intentionally not used, so we keep full control over the nav.
-
-### Install
-
-```bash
-pip install -r requirements.txt
-```
-
-### Run
-
-```bash
-streamlit run app/streamlit_app.py
-```
-
-or:
-
-```bash
-python scripts/run_streamlit.py
-```
-
-No extra environment variables are needed — the app reads `GEMINI_API_KEY` and the Mongo settings from `.env` via `config.py`.
-
-### Performance / quota notes
-
-- Pure DB reads (concept list, mastery counts, recent events) are wrapped in `st.cache_data(ttl=60)` to avoid hammering Atlas on every rerun.
-- No Gemini calls happen on page load. Each **Quiz me** is 1 call (generate) and each **Submit Answer** is 1 call (grade) — mind the free-tier daily cap.
-
-### Screenshots
-
-_TODO: add screenshots for each page._
-
-- Ingest: `docs/screenshots/ingest.png`
-- Graph: `docs/screenshots/graph.png`
-- Daily Review: `docs/screenshots/review.png`
-- Mastery: `docs/screenshots/mastery.png`
+Released under the MIT License — see [LICENSE](LICENSE).

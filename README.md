@@ -169,3 +169,135 @@ This opens a local REPL backed by ADK's `InMemoryRunner`. Type `exit` or press C
 - `Ingest https://www.youtube.com/watch?v=aircAruvnKk`
 - `What concepts do I know about neural networks?`
 - `Quiz me on Backpropagation`
+
+## Phase A3 — MongoDB MCP as an agent tool source
+
+### Architecture: direct Python for writes, MCP for reads
+
+The agent uses a hybrid tool set:
+
+| Path | Mechanism | Tools |
+|---|---|---|
+| Write / study (performance-critical) | Direct Python functions | `ingest_learning_source`, `quiz_concept`, `grade_my_answer` |
+| Graph queries (demo-visible) | **MongoDB MCP server** (read-only) | `find`, `aggregate`, `count`, `list-collections` |
+
+The MCP server is launched read-only (`--readOnly`), and the toolset is further restricted via `tool_filter` to those four query tools — writes never go through MCP. This satisfies the hackathon's MongoDB MCP partner-integration requirement: the agent demonstrably calls MongoDB MCP tools to answer the user's questions.
+
+`list_my_concepts` and `get_concept_details` from Phase A2 were **dropped** from the agent — those reads are now served by MCP `find`/`aggregate`. (The functions still exist in `agent/tools.py` but are no longer registered.)
+
+### Run the MCP integration test
+
+```bash
+python scripts/test_agent_with_mcp.py
+```
+
+This auto-runs two scripted queries and prints the agent's responses plus the tool calls it made.
+
+**Example run (tool calls are visible):**
+
+```
+you> How many concepts do I have in my knowledge graph?
+  [tool call] count({'database': 'honeycomb', 'collection': 'concepts', 'query': {}})
+  [tool done] count
+honeycomb> You have 23 concepts in your knowledge graph.
+
+you> Show me 3 concepts about philosophy.
+  [tool call] find({'database': 'honeycomb', 'collection': 'concepts', 'filter': {...}, 'limit': 3})
+  [tool done] find
+honeycomb> Here are 3 concepts related to philosophy: ...
+```
+
+### Notes
+
+- **Cleanup:** the `MCPToolset` owns a subprocess and stdio session. Both `run_agent_cli.py` and `test_agent_with_mcp.py` call `await mongo_mcp_toolset.close()` in a `finally` block on exit.
+- **Windows:** the MCP server is spawned via `cmd /c mongodb-mcp-server --readOnly` (the binary is a `.cmd` shim); POSIX execs it directly.
+
+## Phase A4 — Mastery tracking & spaced-repetition review
+
+### Model: an event log, not an aggregate
+
+Mastery is **derived**, never stored as a mutable number. Every quiz attempt appends one immutable document to the `mastery_events` collection:
+
+```
+{ concept_id, concept_name, score (0-5), user_answer_excerpt, missed_points, timestamp }
+```
+
+`mastery.compute_mastery(concept_id)` reads a concept's events and derives its current state on demand (attempts, latest score, rolling average of the last 5 attempts, days since last review, level, and whether it is due). Because it is an append-only log, history is preserved and the scoring rules can change without a migration. The collection has only ordinary indexes (a unique index on `(concept_id, timestamp)`) — no vector index.
+
+### Mastery levels
+
+Derived from the rolling average of the last 5 scores:
+
+| Level | Rule |
+|---|---|
+| `untested` | no events recorded |
+| `weak` | rolling avg < 2.5 |
+| `developing` | 2.5 <= rolling avg < 4.0 |
+| `solid` | rolling avg >= 4.0 |
+
+### How `daily_review` prioritizes
+
+`mastery.get_review_candidates(limit=5)` returns only concepts that are **due**, where due means:
+
+- `untested` (never quizzed) — always due, or
+- `weak` / `developing` and last reviewed >= 1 day ago, or
+- `solid` and last reviewed >= 7 days ago.
+
+Due concepts are ordered by priority tier: **weak → developing → untested → solid**, and within a tier the most overdue comes first. The agent calls `record_quiz_attempt` after every grade (so the log stays current) and `daily_review` when you ask what to study.
+
+### Test (uses zero Gemini quota)
+
+```bash
+python scripts/test_mastery.py
+```
+
+Pure Python — no model calls. It seeds backdated events on existing concepts (Neural Network → weak, Backpropagation or Sigmoid Function → solid, Derivative → weak), then asserts the level classification and that review candidates are priority-sorted (weak before solid) and all flagged due.
+
+## Phase A5 — Streamlit UI
+
+A 4-page Streamlit app over the existing pipeline/agent functions. It adds no new Gemini logic — pages call `pipeline`, `quiz`, and `mastery` directly. Gemini is only invoked when you click **Quiz me on this** or **Submit Answer** on the Daily Review page.
+
+### Pages
+
+| Page | What it does |
+|---|---|
+| **Ingest** | Paste a YouTube URL, run the pipeline, see created-vs-merged concepts |
+| **Graph** | Interactive concept graph (prerequisite edges) with node filter and node/edge/orphan stats |
+| **Daily Review** | Spaced-repetition picks; quiz yourself and record the result |
+| **Mastery** | Read-only stats: level counts, recent attempts, top prerequisites |
+
+Custom sidebar navigation (`st.sidebar.radio`) dispatches to a `render_*()` function per page — Streamlit's built-in `pages/` folder is intentionally not used, so we keep full control over the nav.
+
+### Install
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+or:
+
+```bash
+python scripts/run_streamlit.py
+```
+
+No extra environment variables are needed — the app reads `GEMINI_API_KEY` and the Mongo settings from `.env` via `config.py`.
+
+### Performance / quota notes
+
+- Pure DB reads (concept list, mastery counts, recent events) are wrapped in `st.cache_data(ttl=60)` to avoid hammering Atlas on every rerun.
+- No Gemini calls happen on page load. Each **Quiz me** is 1 call (generate) and each **Submit Answer** is 1 call (grade) — mind the free-tier daily cap.
+
+### Screenshots
+
+_TODO: add screenshots for each page._
+
+- Ingest: `docs/screenshots/ingest.png`
+- Graph: `docs/screenshots/graph.png`
+- Daily Review: `docs/screenshots/review.png`
+- Mastery: `docs/screenshots/mastery.png`

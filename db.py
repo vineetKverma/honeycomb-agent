@@ -17,13 +17,23 @@ def _get_client() -> MongoClient:
     return _client
 
 
+MASTERY_COLLECTION = "mastery_events"
+
+
 def get_collection() -> Collection:
     return _get_client()[config.MONGODB_DB][config.MONGODB_COLLECTION]
 
 
+def get_mastery_collection() -> Collection:
+    return _get_client()[config.MONGODB_DB][MASTERY_COLLECTION]
+
+
 def ensure_indexes() -> None:
-    col = get_collection()
-    col.create_index([("name_lower", ASCENDING)], unique=True)
+    get_collection().create_index([("name_lower", ASCENDING)], unique=True)
+    # Unique on (concept_id, timestamp) guards against duplicate writes on retry.
+    get_mastery_collection().create_index(
+        [("concept_id", ASCENDING), ("timestamp", ASCENDING)], unique=True
+    )
 
 
 def vector_search(query_embedding: list[float], limit: int = 5) -> list[dict]:

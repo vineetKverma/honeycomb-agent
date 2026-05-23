@@ -14,15 +14,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import config
 
-# ADK authenticates the Gemini backend from env vars. Default to the AI Studio
-# key from .env unless the user has already configured Vertex/Express env vars.
+# ADK authenticates the Gemini backend from env vars. Use the AI Studio API key
+# from .env, and force USE_VERTEXAI=false so an ambient Vertex env var cannot
+# route us back to Vertex (which caused the billing wall).
 os.environ.setdefault("GOOGLE_API_KEY", config.GEMINI_API_KEY)
-os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "FALSE")
+os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "false"
 
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 
-from agent.agent import honeycomb_agent
+from agent.agent import honeycomb_agent, mongo_mcp_toolset
 
 APP_NAME = "honeycomb"
 USER_ID = "local-user"
@@ -30,6 +31,18 @@ USER_ID = "local-user"
 
 def _ascii(text: str) -> str:
     return (text or "").encode("ascii", "replace").decode("ascii")
+
+
+def _print_events_text(event) -> None:
+    """Surface tool activity and final text from one ADK event."""
+    for call in event.get_function_calls():
+        print(f"  [tool call] {_ascii(call.name)}({_ascii(str(dict(call.args or {})))})")
+    for resp in event.get_function_responses():
+        print(f"  [tool done] {_ascii(resp.name)}")
+    if event.is_final_response() and event.content and event.content.parts:
+        text = "".join(p.text for p in event.content.parts if p.text)
+        if text:
+            print(f"honeycomb> {_ascii(text)}")
 
 
 async def _chat() -> None:
@@ -40,37 +53,31 @@ async def _chat() -> None:
     print("Try: Ingest https://www.youtube.com/watch?v=aircAruvnKk")
     print("-" * 60)
 
-    while True:
-        try:
-            user_input = input("you> ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print("\n[bye]")
-            return
+    try:
+        while True:
+            try:
+                user_input = input("you> ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print("\n[bye]")
+                break
 
-        if not user_input:
-            continue
-        if user_input.lower() in {"exit", "quit"}:
-            print("[bye]")
-            return
+            if not user_input:
+                continue
+            if user_input.lower() in {"exit", "quit"}:
+                print("[bye]")
+                break
 
-        message = types.Content(role="user", parts=[types.Part(text=user_input)])
-        try:
-            async for event in runner.run_async(
-                user_id=USER_ID, session_id=session.id, new_message=message
-            ):
-                # Surface tool activity so the multi-step plan is visible.
-                for call in event.get_function_calls():
-                    print(f"  [tool call] {_ascii(call.name)}({_ascii(str(dict(call.args or {})))})")
-                for resp in event.get_function_responses():
-                    print(f"  [tool done] {_ascii(resp.name)}")
-
-                # Print the agent's text on the final response of a turn.
-                if event.is_final_response() and event.content and event.content.parts:
-                    text = "".join(p.text for p in event.content.parts if p.text)
-                    if text:
-                        print(f"honeycomb> {_ascii(text)}")
-        except Exception as e:
-            print(f"[error] {type(e).__name__}: {_ascii(str(e))}")
+            message = types.Content(role="user", parts=[types.Part(text=user_input)])
+            try:
+                async for event in runner.run_async(
+                    user_id=USER_ID, session_id=session.id, new_message=message
+                ):
+                    _print_events_text(event)
+            except Exception as e:
+                print(f"[error] {type(e).__name__}: {_ascii(str(e))}")
+    finally:
+        # MCPToolset owns a subprocess + stdio session that must be closed.
+        await mongo_mcp_toolset.close()
 
 
 def main() -> int:

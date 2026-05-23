@@ -10,6 +10,7 @@ datetime objects leak out, since ADK serializes tool results for the model.
 """
 import db
 import embed
+import mastery
 import pipeline
 import quiz
 
@@ -159,3 +160,54 @@ def get_concept_details(concept_name: str) -> dict:
         "prerequisites": doc.get("prerequisites", []),
         "sources": doc.get("sources", []),
     }
+
+
+def record_quiz_attempt(
+    concept_name: str, question: str, user_answer: str, score: int, missed_points: list[str]
+) -> dict:
+    """Record a quiz outcome to the mastery log. Call this after every grade_my_answer so
+    mastery tracking stays accurate. Deterministic; does not call any model.
+
+    Args:
+        concept_name: The concept that was quizzed (matched case-insensitively).
+        question: The quiz question that was asked.
+        user_answer: The user's free-text answer (stored truncated).
+        score: The 0-5 score from grade_my_answer.
+        missed_points: The missed_points list from grade_my_answer.
+
+    Returns:
+        A dict with concept_id (str), event_id (str), and new_mastery_level
+        ("weak"|"developing"|"solid").
+
+    Raises:
+        ValueError: if no concept with that name exists in the graph.
+    """
+    doc = _find_concept(concept_name)
+    if doc is None:
+        raise ValueError(f"No concept named '{concept_name}' is in your graph yet.")
+    event_id = mastery.record_event(doc["_id"], doc["name"], score, user_answer, missed_points)
+    info = mastery.compute_mastery(doc["_id"])
+    return {
+        "concept_id": str(doc["_id"]),
+        "event_id": str(event_id),
+        "new_mastery_level": info["mastery_level"],
+    }
+
+
+def daily_review() -> dict:
+    """Plan a spaced-repetition daily review of the user's weakest and due concepts.
+
+    Returns:
+        A dict with `candidates` (up to 5 concepts due for review, highest priority
+        first; each has name, definition, and mastery_info) and `summary` (a one-line
+        natural-language overview of what is due).
+    """
+    candidates = mastery.get_review_candidates(limit=5)
+    levels = [c["mastery_info"]["mastery_level"] for c in candidates]
+    parts = [f"{levels.count(lvl)} {lvl}" for lvl in ("weak", "developing", "untested", "solid") if levels.count(lvl)]
+    summary = (
+        "You have " + " and ".join(parts) + " concept(s) ready for review."
+        if parts
+        else "Nothing is due for review right now -- nice work!"
+    )
+    return {"candidates": candidates, "summary": summary}

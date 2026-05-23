@@ -6,3 +6,5 @@ rich
 pydantic
 mcp
 google-adk
+streamlit
+streamlit-agraph

@@ -1,14 +1,17 @@
 # Honeycomb dependencies (Python version in runtime.txt).
-# Versions pinned to the tested set; full resolved environment in requirements-frozen.txt.
+# API-/deploy-critical packages are pinned to the tested set; stable utility
+# libs are left loose. Full resolved environment: requirements-frozen.txt.
 
 google-genai==1.75.0
 google-adk==2.0.0
 pymongo==4.17.0
 mcp==1.27.1
 youtube-transcript-api==1.2.4
-python-dotenv==1.2.2
 pydantic==2.13.4
-rich==15.0.0
-tenacity==9.1.4
 streamlit==1.57.0
 streamlit-agraph==0.0.45
+
+# Stable utilities -- left loose
+python-dotenv
+rich
+tenacity
